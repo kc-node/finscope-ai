@@ -1,6 +1,7 @@
+# File tells FastAPI = endpoint expects a file upload 
 from fastapi import FastAPI, UploadFile, File 
 from app.services.pdf_service import extract_text_from_pdf
-# File tells FastAPI = endpoint expects a file upload 
+from app.services.insights_service import analyse_financial_text
 # Used for copying file contents
 import shutil 
 # to handle file paths
@@ -49,7 +50,11 @@ async def upload_file(file: UploadFile = File(...)):
 
     extracted_text = extract_text_from_pdf(file_path)
 
+    insights = analyse_financial_text(extracted_text)
+
     return {
         "filename": file.filename,
-        "extracted_text": extracted_text
+        "extracted_text": extracted_text,
+        "insights": insights
     }
+

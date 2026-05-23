@@ -23,14 +23,13 @@ def analyse_financial_text(text: str):
         insights["revenue_detected"] = True
         insights["keywords"].append("revenue")
 
-
     # Find something about expense
     if any(word in text_lower for word in expense_keywords):
         insights["expense_detected"] = True
         insights["keywords"].append("expense")
 
     # Find something about proft
-     if any(word in text_lower for word in expense_keywords):
+    if any(word in text_lower for word in profit_keywords):
         insights["profit_detected"] = True
         insights["keywords"].append("proft")
 

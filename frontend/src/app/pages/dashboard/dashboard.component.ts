@@ -134,3 +134,4 @@ barChartData: any = {
   };
 }
 }
+

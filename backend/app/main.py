@@ -2,6 +2,8 @@
 from fastapi import FastAPI, UploadFile, File 
 from app.services.pdf_service import extract_text_from_pdf
 from app.services.insights_service import analyse_financial_text# Used for copying file contents
+from app.services.insights_service import generate_financial_summary
+
 import shutil 
 # to handle file paths
 from pathlib import Path 
@@ -50,9 +52,11 @@ async def analyse_file(filename: str):
     # Analyse financial text
     insights = analyse_financial_text(extracted_text)
 
+    summary = generate_financial_summary(insights)
+
     return {
         "filename": filename,
-        # "extracted_text": extracted_text,
+        "summary": summary, 
         "insights": insights
     }
 

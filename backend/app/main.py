@@ -3,6 +3,7 @@ from fastapi import FastAPI, UploadFile, File
 from app.services.pdf_service import extract_text_from_pdf
 from app.services.insights_service import analyse_financial_text# Used for copying file contents
 from app.services.insights_service import generate_financial_summary
+from fastapi.middleware.cors import CORSMiddleware
 
 import shutil 
 # to handle file paths
@@ -10,6 +11,15 @@ from pathlib import Path
 
 # Create backend application.
 app = FastAPI()
+
+# to help frontend to talk to backend 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:4200"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Create uploads folder path
 UPLOAD_DIR = Path("uploads")

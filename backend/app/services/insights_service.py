@@ -8,7 +8,7 @@ def analyse_financial_text(text: str):
     insights = {
         "revenue_detected": False,
         "expense_detected": False,
-        "profit_detected:": False,
+        "profit_detected": False,
         "risk_level": "LOW",
         "keywords": []
     }
@@ -28,10 +28,10 @@ def analyse_financial_text(text: str):
         insights["expense_detected"] = True
         insights["keywords"].append("expense")
 
-    # Find something about proft
+    # Find something about proift
     if any(word in text_lower for word in profit_keywords):
         insights["profit_detected"] = True
-        insights["keywords"].append("proft")
+        insights["keywords"].append("profit")
 
     # Risk scoring logic
     if insights["expense_detected"] and not insights["profit_detected"]:

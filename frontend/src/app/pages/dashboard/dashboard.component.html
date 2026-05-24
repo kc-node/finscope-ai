@@ -68,20 +68,30 @@
 
   </div>
 
-  <!-- Chart Card -->
- <div class="card">
-  <h2>Financial Analytics</h2>
-  
-  <div class="chart-container">
-    <canvas
-      baseChart
-      [data]="barChartData"
-      [options]="chartOptions"
-      [type]="'bar'">
-    </canvas>
-  </div>
-</div>
+      <!-- Chart Card -->
+    <div class="card">
+      <h2>Financial Analytics</h2>
+      
+      <div class="chart-container">
+        <canvas
+          baseChart
+          [data]="barChartData"
+          [options]="chartOptions"
+          [type]="'bar'">
+        </canvas>
+      </div>
+    </div>
 
-</div>
+      <div class="card">
+
+        <h2>Risk Score</h2>
+
+        <div class="risk">
+          {{ analysisResult.insights.risk_score }}
+        </div>
+
+      </div>
+
+  </div>
 
 </div>

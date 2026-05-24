@@ -10,6 +10,7 @@ def analyse_financial_text(text: str):
         "expense_detected": False,
         "profit_detected": False,
         "risk_level": "LOW",
+        "risk_score": 0,
         "keywords": []
     }
 
@@ -17,6 +18,9 @@ def analyse_financial_text(text: str):
     revenue_keywords = ["revenue", "income", "sales"]
     expense_keywords = ["expense", "cost", "operating_cost"]
     profit_keywords = ["profit", "net profit", "earnings"]
+    debt_keywords = ["debt", "liability", "loan"]
+    loss_keywords = ["loss", "decline", "bankruptcy"]
+    growth_keywords = ["growth", "increase", "expansion"]
 
     # Find something about revenue
     if any(word in text_lower for word in revenue_keywords):
@@ -42,6 +46,35 @@ def analyse_financial_text(text: str):
 
     return insights
 
+    risk_score = 0
+
+    if any(word in text_lower for word in revenue_keywords):
+        risk_score += 2
+
+    if any(word in text_lower for word in profit_keywords):
+        risk_score += 3
+
+    if any(word in text_lower for word in expense_keywords):
+        risk_score -= 2
+
+    if any(word in text_lower for word in debt_keywords):
+        risk_score -= 3
+
+    if any(word in text_lower for word in loss_keywords):
+        risk_score -= 4
+
+    insights["risk_score"] = risk_score
+
+    if risk_score >= 3:
+        insights["risk_level"] = "LOW"
+
+    elif risk_score >= 0:
+        insights["risk_level"] = "MEDIUM"
+
+    else:
+        insights["risk_level"] = "HIGH"
+    
+    return insights
 
 # Generate human-readable insights 
 

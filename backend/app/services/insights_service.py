@@ -41,3 +41,39 @@ def analyse_financial_text(text: str):
         insights["risk_level"] = "MEDIUM"
 
     return insights
+
+
+# Generate human-readable insights 
+
+def generate_financial_summary(insights):
+
+    risk = insights["risk_level"]
+
+    revenue = insights["revenue_detected"]
+    expense = insights["expense_detected"]
+    profit = insights["profit_detected"]
+
+    # High risk summary
+    if risk == "HIGH":
+        return (
+            "The document indicates rising expenses "
+            "without strong evidence of profitability, "
+            "suggesting elevated financial risk."
+        )
+
+    # Medium risk summary
+    elif risk == "MEDIUM":
+        return (
+            "The company shows both revenue generation "
+            "and operational expenses. Financial performance "
+            "appears stable but should be monitored carefully."
+        )
+
+    # Low risk summary
+    elif risk == "LOW":
+        return (
+            "The document reflects healthy financial indicators "
+            "with evidence of profitability and controlled risk."
+        )
+
+    return "Unable to generate financial summary."

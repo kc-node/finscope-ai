@@ -1,0 +1,87 @@
+<div class="dashboard">
+
+  <h1>FinScope AI</h1>
+
+  <p class="subtitle">
+    AI-powered financial document analysis
+  </p>
+
+  <!-- Upload Card -->
+  <div class="card">
+
+    <input
+      type="file"
+      (change)="onFileSelected($event)"
+    />
+
+    <button (click)="analyseFile()">
+      Analyse Report
+    </button>
+
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="card">
+    Analysing financial report...
+  </div>
+
+  <!-- Results -->
+<div *ngIf="analysisResult" class="results">
+
+  <!-- Risk Card -->
+  <div class="card">
+
+    <h2>Risk Level</h2>
+
+    <div class="risk">
+      {{ analysisResult.insights.risk_level }}
+    </div>
+
+  </div>
+
+  <!-- Summary Card -->
+  <div class="card">
+
+    <h2>AI Summary</h2>
+
+    <p>
+      {{ analysisResult.summary }}
+    </p>
+
+  </div>
+
+  <!-- Keywords Card -->
+  <div class="card">
+
+    <h2>Detected Keywords</h2>
+
+    <div class="keywords">
+
+      <span
+        *ngFor="let keyword of analysisResult.insights.keywords"
+        class="keyword"
+      >
+        {{ keyword }}
+      </span>
+
+    </div>
+
+  </div>
+
+  <!-- Chart Card -->
+ <div class="card">
+  <h2>Financial Analytics</h2>
+  
+  <div class="chart-container">
+    <canvas
+      baseChart
+      [data]="barChartData"
+      [options]="chartOptions"
+      [type]="'bar'">
+    </canvas>
+  </div>
+</div>
+
+</div>
+
+</div>

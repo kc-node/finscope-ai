@@ -1,0 +1,60 @@
+.dashboard {
+
+  max-width: 900px;
+  margin: auto;
+  padding: 2rem;
+  font-family: Arial, sans-serif;
+
+  h1 {
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .subtitle {
+    color: gray;
+    margin-bottom: 2rem;
+  }
+
+  .card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  }
+
+  button {
+    margin-top: 1rem;
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+
+  .risk {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-top: 1rem;
+  }
+
+  .keywords {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .keyword {
+    background: #ececec;
+    padding: 0.5rem 1rem;
+    border-radius: 900px;
+    font-size: 0.9rem;
+  }
+
+  .chart-container {
+    position: relative;
+    margin-top: 1rem;
+    height: 400px; 
+    width: 100%;
+  }
+}

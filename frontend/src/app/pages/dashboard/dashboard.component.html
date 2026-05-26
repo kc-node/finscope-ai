@@ -1,56 +1,125 @@
-<div class="dashboard">
+<div class="dashboard-container">
 
-  <h1>FinScope AI</h1>
+  <header class="dashboard-header">
+    <h1>FinScope <span class="accent-text">AI</span></h1>
+    <p class="subtitle">AI-powered financial document intelligence & risk analysis</p>
+  </header>
 
-  <p class="subtitle">
-    AI-powered financial document analysis
-  </p>
-
-  <div class="card">
+  <div 
+    class="dropzone-card"
+    [class.drag-active]="isDragging"
+    [class.has-file]="selectedFile"
+    (dragover)="onDragOver($event)"
+    (dragleave)="onDragLeave()"
+    (drop)="onDrop($event)"
+    (click)="!selectedFile && fileInput.click()"
+  >
     <input
       type="file"
+      #fileInput
+      style="display: none;"
       (change)="onFileSelected($event)"
+      accept=".txt,.pdf,.csv"
     />
 
-    <button (click)="analyseFile()">
-      Analyse Report
-    </button>
+    <div *ngIf="!selectedFile" class="dropzone-prompt">
+      <div class="icon-pulse-wrapper">
+        <div class="pulse-ring"></div>
+        <span class="upload-icon">📁</span>
+      </div>
+      <h3>Drop your financial statement here</h3>
+      <p>Supports PDF, TXT, CSV • <span (click)="fileInput.click()">Browse Files</span></p>
+    </div>
+
+    <div *ngIf="selectedFile" class="staged-file-view">
+      <div class="file-info-badge">
+        <div class="file-type-indicator">
+          {{ selectedFile.name.split('.').pop() | uppercase }}
+        </div>
+        <div class="file-details">
+          <p class="file-name">{{ selectedFile.name }}</p>
+          <p class="file-size">{{ getFormattedFileSize() }}</p>
+        </div>
+        <button class="remove-file-btn" (click)="clearSelectedFile(); $event.stopPropagation()">
+          ×
+        </button>
+      </div>
+
+      <button class="action-submit-btn" [disabled]="loading" (click)="analyseFile()">
+        <span *ngIf="!loading">Launch AI Analysis</span>
+        <span *ngIf="loading" class="spinner"></span>
+      </button>
+    </div>
   </div>
 
-  <div *ngIf="loading" class="card">
-    Analysing financial report...
+  <div *ngIf="loading" class="shimmer-loader-card">
+    <div class="shimmer-bar"></div>
+    <p>Parsing financial structure & extracting metrics...</p>
   </div>
 
-  <div *ngIf="analysisResult" class="results">
+  <div *ngIf="analysisResult && !loading" class="results-grid">
 
-    <div class="card">
-      <h2>Risk Level</h2>
-      <div class="risk">
-        {{ analysisResult.insights?.risk_level }}
+    <div class="currency-toolbar-card">
+      <div class="toolbar-label">
+        <span>💱</span> Global Reporting Currency
+      </div>
+      <div class="currency-buttons">
+        <button 
+          *ngFor="let curr of currencies" 
+          class="currency-toggle-btn"
+          [class.active]="selectedCurrencyCode === curr.code"
+          (click)="onCurrencyChange(curr.code)">
+          {{ curr.code }} ({{ curr.symbol }})
+        </button>
       </div>
     </div>
 
-    <div class="card">
-      <h2>AI Summary</h2>
-      <p>
-        {{ analysisResult.summary }}
-      </p>
+    <div class="executive-row">
+      
+      <div class="card risk-card" [ngClass]="getRiskClass(analysisResult.insights?.risk_level)">
+        <h2>Risk Level</h2>
+        <div class="risk-badge">
+          {{ analysisResult.insights?.risk_level }}
+        </div>
+        <div class="risk-score">
+          Score: {{ analysisResult.insights?.risk_score }}
+        </div>
+      </div>
+
+      <div class="card summary-card">
+        <h2>AI Executive Summary</h2>
+        <p>{{ analysisResult.summary }}</p>
+      </div>
+
     </div>
 
-    <div class="card">
-      <h2>Detected Keywords</h2>
-      <div class="keywords">
-        <span
-          *ngFor="let keyword of analysisResult.insights?.keywords"
-          class="keyword"
-        >
-          {{ keyword }}
+    <div class="kpi-grid" *ngIf="analysisResult.metrics">
+      
+      <div class="kpi-card revenue">
+        <span class="kpi-label">Total Revenue</span>
+        <span class="kpi-value">
+          {{ formatCurrency(getConvertedValue(analysisResult.metrics.revenue?.value)) }}
         </span>
       </div>
+
+      <div class="kpi-card expenses">
+        <span class="kpi-label">Operational Expenses</span>
+        <span class="kpi-value">
+          {{ formatCurrency(getConvertedValue(analysisResult.metrics.expenses?.value)) }}
+        </span>
+      </div>
+
+      <div class="kpi-card profit">
+        <span class="kpi-label">Net Profit</span>
+        <span class="kpi-value" [class.negative]="analysisResult.metrics.profit?.value < 0">
+          {{ formatCurrency(getConvertedValue(analysisResult.metrics.profit?.value)) }}
+        </span>
+      </div>
+
     </div>
 
-    <div class="card">
-      <h2>Financial Analytics</h2>
+    <div class="card chart-card">
+      <h2>Financial Analytics ({{ selectedCurrencyCode }})</h2>
       <div class="chart-container">
         <canvas
           baseChart
@@ -61,34 +130,15 @@
       </div>
     </div>
 
-    <div class="card">
-      <h2>Risk Score</h2>
-      <div class="risk">
-        {{ analysisResult.insights?.risk_score }}
+    <div class="card concepts-card">
+      <h2>Detected Core Concepts</h2>
+      <div class="keywords">
+        <span *ngFor="let keyword of analysisResult.insights?.keywords" class="keyword">
+          {{ keyword }}
+        </span>
       </div>
     </div>
 
-    <div class="card" *ngIf="analysisResult.metrics">
-      <h2>Financial Metrics</h2>
-
-      <p>
-        Revenue:
-        {{ analysisResult.metrics.revenue?.currency }}
-        {{ analysisResult.metrics.revenue?.value }}
-      </p>
-
-      <p>
-        Expenses:
-        {{ analysisResult.metrics.expenses?.currency }}
-        {{ analysisResult.metrics.expenses?.value }}
-      </p>
-
-      <p>
-        Profit:
-        {{ analysisResult.metrics.profit?.currency }}
-        {{ analysisResult.metrics.profit?.value }}
-      </p>
-    </div>
-
   </div>
-</div> 
+
+</div>

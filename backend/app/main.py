@@ -4,6 +4,7 @@ from app.services.pdf_service import extract_text_from_pdf
 from app.services.insights_service import analyse_financial_text# Used for copying file contents
 from app.services.insights_service import generate_financial_summary
 from fastapi.middleware.cors import CORSMiddleware
+from app.services.metrics_service import extract_financial_metrics
 
 import shutil 
 # to handle file paths
@@ -64,9 +65,12 @@ async def analyse_file(filename: str):
 
     summary = generate_financial_summary(insights)
 
+    metrics = extract_financial_metrics(extracted_text)
+
     return {
         "filename": filename,
-        "summary": summary, 
-        "insights": insights
+        "summary": summary,
+        "insights": insights,
+         "metrics": metrics
     }
 

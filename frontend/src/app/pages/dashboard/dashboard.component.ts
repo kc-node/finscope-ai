@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ApiService } from '../../services/api.service';
 import { FormsModule } from '@angular/forms';
@@ -12,126 +12,142 @@ import { Chart, registerables } from 'chart.js';
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })
-
 export class DashboardComponent {
+  @ViewChild(BaseChartDirective) chart?: BaseChartDirective;
 
-  barChartLabels: string[] = [
-  'Revenue',
-  'Expenses',
-  'Profit'
-];
-
-barChartData: any = {
-  labels: ['Revenue', 'Expenses', 'Profit'],
-  datasets: [
-    {
-      data: [0, 0, 0],
-      label: 'Financial Indicators'
-    }
-  ]
-};
-
-  selectedFile!: File;
-
-  analysisResult: any = null;
-
-  loading = false;
+  barChartData: any = {
+    labels: ['Revenue', 'Expenses', 'Profit'],
+    datasets: [{ data: [0, 0, 0], label: 'Financial Metrics' }]
+  };
 
   chartOptions = {
-  responsive: true,
-  maintainAspectRatio: false,
-
-  scales: {
-    y: {
-      beginAtZero: true,
-      max: 2,
-
-      ticks: {
-        stepSize: 1
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      y: {
+        beginAtZero: true,
+        ticks: {
+          callback: function (value: any) {
+            return '$' + value.toLocaleString();
+          }
+        }
       }
     }
-  }
-};
+  };
+
+  // State
+  selectedFile: File | null = null;
+  analysisResult: any = null;
+  loading = false;
+  isDragging = false;
 
   constructor(private apiService: ApiService) {
-     Chart.register(...registerables);
+    Chart.register(...registerables);
   }
 
-  // Handle file selection
+  // File Selection
   onFileSelected(event: any) {
-
-    this.selectedFile = event.target.files[0];
+    if (event.target.files && event.target.files.length > 0) {
+      this.selectedFile = event.target.files[0];
+    }
   }
 
-  // Upload + analyze file
-  analyseFile() {
+  // Drag Events
+  onDragOver(event: DragEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDragging = true;
+  }
 
+  onDragLeave() {
+    this.isDragging = false;
+  }
+
+  onDrop(event: DragEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDragging = false;
+
+    if (event.dataTransfer && event.dataTransfer.files.length > 0) {
+      this.selectedFile = event.dataTransfer.files[0];
+    }
+  }
+
+  // Analysis Pipeline
+  analyseFile() {
     if (!this.selectedFile) return;
 
     this.loading = true;
 
-    // Upload first
-    this.apiService.uploadFile(this.selectedFile)
-      .subscribe({
+    this.apiService.uploadFile(this.selectedFile).subscribe({
+      next: (uploadResponse: any) => {
+        const filename = uploadResponse.filename;
 
-        next: (uploadResponse: any) => {
-
-          const filename = uploadResponse.filename;
-
-          // Analyse uploaded file
-          this.apiService.analyseFile(filename)
-            .subscribe({
-
-              next: (analysisResponse) => {
-
-                this.analysisResult = analysisResponse;
-                this.updateChartData();
-                this.loading = false;
-              },
-
-              error: (error) => {
-
-                console.error(error);
-
-                this.loading = false;
-              }
-            });
-        },
-
-        error: (error) => {
-
-          console.error(error);
-
-          this.loading = false;
-        }
-      });
+        this.apiService.analyseFile(filename).subscribe({
+          next: (analysisResponse) => {
+            this.analysisResult = analysisResponse;
+            this.updateChartData();
+            this.loading = false;
+          },
+          error: (error) => {
+            console.error(error);
+            this.loading = false;
+          }
+        });
+      },
+      error: (error) => {
+        console.error(error);
+        this.loading = false;
+      }
+    });
   }
 
-   updateChartData() {
+  // Chart Update
+  updateChartData() {
+    if (!this.analysisResult?.metrics) return;
 
-  if (!this.analysisResult) return;
+    const metrics = this.analysisResult.metrics;
 
-  const insights = this.analysisResult.insights;
+    this.barChartData = {
+      labels: ['Revenue', 'Expenses', 'Profit'],
+      datasets: [
+        {
+          data: [
+            metrics.revenue?.value || 0,
+            metrics.expenses?.value || 0,
+            metrics.profit?.value || 0
+          ],
+          label: 'Financial Metrics',
+          backgroundColor: ['#3498db', '#e74c3c', '#2ecc71'],
+          borderRadius: 8,
+          barPercentage: 0.5,
+          categoryPercentage: 0.5
+        }
+      ]
+    };
 
-  this.barChartData = {
-    labels: ['Revenue', 'Expenses', 'Profit'],
-    
-    datasets: [
-    {
-      data: [
-        insights.revenue_detected ? 1 : 0,
-        insights.expense_detected ? 1 : 0,
-        insights.profit_detected ? 1 : 0
-      ],
+    this.chart?.update();
+  }
 
-      label: 'Financial Indicators',
 
-      borderRadius: 8,
-      barPercentage: 0.6,
-      categoryPercentage: 0.7
-    }
-  ]
-  };
+  getFormattedFileSize(): string {
+    if (!this.selectedFile) return '';
+
+    const bytes = this.selectedFile.size;
+    if (bytes === 0) return '0 Bytes';
+
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB'];
+
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  }
+
+  clearSelectedFile() {
+    this.selectedFile = null;
+    this.analysisResult = null;
+    this.barChartData.datasets[0].data = [0, 0, 0];
+    this.chart?.update();
+  }
 }
-}
-

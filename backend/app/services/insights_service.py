@@ -32,20 +32,12 @@ def analyse_financial_text(text: str):
         insights["expense_detected"] = True
         insights["keywords"].append("expense")
 
-    # Find something about proift
+    # Find something about profit
     if any(word in text_lower for word in profit_keywords):
         insights["profit_detected"] = True
         insights["keywords"].append("profit")
 
-    # Risk scoring logic
-    if insights["expense_detected"] and not insights["profit_detected"]:
-        insights["risk_level"] = "HIGH"
-
-    elif insights["expense_detected"] and insights["revenue_detected"]:
-        insights["risk_level"] = "MEDIUM"
-
-    return insights
-
+    # Dynamic Risk Scoring Logic
     risk_score = 0
 
     if any(word in text_lower for word in revenue_keywords):
@@ -59,32 +51,34 @@ def analyse_financial_text(text: str):
 
     if any(word in text_lower for word in debt_keywords):
         risk_score -= 3
+        insights["keywords"].append("debt/liability")
 
     if any(word in text_lower for word in loss_keywords):
         risk_score -= 4
+        insights["keywords"].append("loss/decline")
+        
+    if any(word in text_lower for word in growth_keywords):
+        risk_score += 1
+        insights["keywords"].append("growth")
 
     insights["risk_score"] = risk_score
 
+    # Evaluate Final Risk Category based on score
     if risk_score >= 3:
         insights["risk_level"] = "LOW"
-
     elif risk_score >= 0:
         insights["risk_level"] = "MEDIUM"
-
     else:
         insights["risk_level"] = "HIGH"
     
+    # Single, definitive return statement at the very end
     return insights
+
 
 # Generate human-readable insights 
 
 def generate_financial_summary(insights):
-
     risk = insights["risk_level"]
-
-    revenue = insights["revenue_detected"]
-    expense = insights["expense_detected"]
-    profit = insights["profit_detected"]
 
     # High risk summary
     if risk == "HIGH":

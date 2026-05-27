@@ -6,7 +6,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class ApiService {
 
-  private baseUrl = 'http://127.0.0.1:8000';
+  private baseUrl = 'https://finscope-ai-backend-mdd3.onrender.com';
 
   constructor(private http: HttpClient) {}
 

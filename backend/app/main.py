@@ -13,6 +13,12 @@ from pathlib import Path
 # Create backend application.
 app = FastAPI()
 
+origins = [
+    "http://localhost:4200", 
+    "http://127.0.0.1:4200",
+    # need to add netlify URL 
+]
+
 # to help frontend to talk to backend 
 app.add_middleware(
     CORSMiddleware,
@@ -38,6 +44,10 @@ def root():
 @app.post("/upload")
 # to know: fastAPI is built around async 
 async def upload_file(file: UploadFile = File(...)):
+
+    if not file.filename:
+        raise HTTPException(status_code=400, detail="Uploaded file missing a valid filename.")
+
     # create a full file path e.g. upload/report.pdf
     file_path = UPLOAD_DIR / file.filename 
 

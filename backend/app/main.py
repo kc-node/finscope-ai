@@ -16,10 +16,11 @@ app = FastAPI()
 # to help frontend to talk to backend 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:4200"],
-    allow_credentials=True,
+    allow_origins=["*"],             
+    allow_credentials=False,      
     allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=["*"]
 )
 
 # Create uploads folder path
@@ -57,20 +58,27 @@ async def upload_file(file: UploadFile = File(...)):
 async def analyse_file(filename: str):
     file_path = UPLOAD_DIR / filename
 
-    # Extract text from PDF
-    extracted_text = extract_text_from_pdf(file_path)
+    if not file_path.exists():
+        raise HTTPException(status_code=404, detail="Requested file not found on server.")
 
-    # Analyse financial text
-    insights = analyse_financial_text(extracted_text)
+    try: 
+        # Extract text from PDF
+        extracted_text = extract_text_from_pdf(file_path)
 
-    summary = generate_financial_summary(insights)
+        # Analyse financial text
+        insights = analyse_financial_text(extracted_text)
 
-    metrics = extract_financial_metrics(extracted_text)
+        summary = generate_financial_summary(insights)
 
-    return {
-        "filename": filename,
-        "summary": summary,
-        "insights": insights,
-         "metrics": metrics
-    }
+        metrics = extract_financial_metrics(extracted_text)
 
+        return {
+            "filename": filename,
+            "summary": summary,
+            "insights": insights,
+            "metrics": metrics
+        }
+
+    except Exception as e:
+        print(f"BACKEND PIPELINE CRASH: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Analysis pipeline failed: {str(e)}")

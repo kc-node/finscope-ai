@@ -7,3 +7,6 @@
   
   # Force Netlify to use the explicit modern Angular distribution directory
   publish = "dist/frontend/browser"
+
+  [build.environment]
+  NPM_FLAGS = "--legacy-peer-deps"

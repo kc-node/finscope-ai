@@ -1,0 +1,9 @@
+[build]
+  # Tell Netlify where your frontend package.json lives
+  base = "frontend"
+  
+  # Tell Netlify how to compile your Angular app
+  command = "npm run build"
+  
+  # Force Netlify to use the explicit modern Angular distribution directory
+  publish = "dist/frontend/browser"

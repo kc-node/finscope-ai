@@ -13,10 +13,16 @@ from pathlib import Path
 # Create backend application.
 app = FastAPI()
 
+origins = [
+    "http://localhost:4200", 
+    "http://127.0.0.1:4200",
+    # need to add netlify URL 
+]
+
 # to help frontend to talk to backend 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:4200"],
+    allow_origins=origins, 
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -37,6 +43,10 @@ def root():
 @app.post("/upload")
 # to know: fastAPI is built around async 
 async def upload_file(file: UploadFile = File(...)):
+
+    if not file.filename:
+        raise HTTPException(status_code=400, detail="Uploaded file missing a valid filename.")
+
     # create a full file path e.g. upload/report.pdf
     file_path = UPLOAD_DIR / file.filename 
 
@@ -56,6 +66,9 @@ async def upload_file(file: UploadFile = File(...)):
 @app.get("/analyse/{filename}")
 async def analyse_file(filename: str):
     file_path = UPLOAD_DIR / filename
+
+    if not file_path.exists():
+        raise HTTPException(status_code=404, detail="Requested file not found on server.")
 
     # Extract text from PDF
     extracted_text = extract_text_from_pdf(file_path)

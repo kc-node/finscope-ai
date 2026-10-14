@@ -1,0 +1,67 @@
+---
+name: Engineering Task
+about: Track technical, architectural, documentation, testing and DevOps work for FinScope AI
+title: "[TASK] "
+labels: ["type:chore"]
+assignees: []
+---
+
+# Engineering Task
+
+## 1. Objective
+
+Clearly describe the goal and why this task is necessary.
+
+...
+
+## 2. Task Description
+
+Describe what needs to be implemented, configured, designed, improved or documented.
+
+...
+
+## 3. Scope of Work
+
+Break the task into smaller, actionable activities.
+
+- [ ] Task 1
+- [ ] Task 2
+- [ ] Task 3
+
+## 4. Acceptance Criteria
+
+Define clear, verifiable conditions that must be satisfied for this task to be considered complete.
+
+- [ ] Criterion 1
+- [ ] Criterion 2
+- [ ] Criterion 3
+
+## 5. Dependencies (Optional)
+
+List any related issues, components, services, or tasks that must be completed first.
+
+...
+
+## 6. Related Documentation (Optional)
+
+Reference relevant engineering documents, such as:
+
+- Software Requirements Specification (SRS)
+- Software Architecture Specification (SAS)
+- Architecture Decision Records (ADRs)
+- Architecture diagrams
+- API specifications
+
+...
+
+## 7. Risks and Technical Considerations (Optional)
+
+Describe potential implementation risks, security concerns, performance implications or architectural constraints.
+
+...
+
+## 8. Additional Context (Optional)
+
+Include diagrams, screenshots, references or supporting information.
+
+...

@@ -1,0 +1,49 @@
+---
+name: Bug Report
+about: Report a bug or unexpected behaviour in FinScope AI
+title: "[BUG] "
+labels: ["bug"]
+assignees: []
+---
+
+# Bug Report
+
+## 1. Reproduction Steps
+
+Provide clear, numbered steps that anyone can follow to reproduce the bug.
+
+1. Go to ...
+2. Click on ...
+3. Enter or upload ...
+4. Observe the result.
+
+## 2. Observed Result
+
+Describe what actually happens after following the reproduction steps.
+
+**Actual behaviour:**
+
+...
+
+## 3. Expected Result
+
+Describe what should happen instead if the system were functioning correctly.
+
+**Expected behaviour:**
+
+...
+
+## 4. Impact (Optional)
+
+Describe how frequently the bug occurs and how it affects users or the system.
+
+**Frequency:**
+- [ ] Always (100% of the time)
+- [ ] Frequently
+- [ ] Occasionally
+- [ ] Rarely
+- [ ] Unknown
+
+**Impact on users or functionality:**
+
+...

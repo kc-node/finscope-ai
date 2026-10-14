@@ -1,0 +1,77 @@
+---
+name: Feature Request
+about: Propose a new feature or enhancement for FinScope AI
+title: "[FEATURE] "
+labels: ["feature"]
+assignees: []
+---
+
+# Feature Request
+
+## 1. Problem Statement
+
+Describe the problem or user need that this feature aims to address.
+
+**What problem are we trying to solve?**
+
+...
+
+## 2. User Story
+
+Describe the feature from the user's perspective.
+
+**Format:**
+
+As a [type of user],  
+I want [specific functionality],  
+so that [benefit or value].
+
+**User Story:**
+
+...
+
+## 3. Proposed Solution
+
+Describe how the feature should work and what functionality it should provide.
+
+**Proposed functionality:**
+
+...
+
+## 4. Acceptance Criteria
+
+Define clear, measurable conditions that must be satisfied for the feature to be considered complete.
+
+- [ ] Criterion 1
+- [ ] Criterion 2
+- [ ] Criterion 3
+
+## 5. Functional Requirements
+
+List the functional requirements associated with this feature.
+
+Reference requirement IDs from the Software Requirements Specification (SRS), where available.
+
+- FR-XXX:
+- FR-XXX:
+
+## 6. Non-Functional Requirements
+
+Identify relevant quality attributes or constraints.
+
+Examples include performance, security, usability, accessibility, reliability and maintainability.
+
+- NFR-XXX:
+- NFR-XXX:
+
+## 7. Dependencies (Optional)
+
+List any features, services, libraries or other tasks that must be completed before this feature can be implemented.
+
+...
+
+## 8. Additional Context (Optional)
+
+Include relevant diagrams, UI mockups, technical considerations or links to supporting documentation.
+
+...

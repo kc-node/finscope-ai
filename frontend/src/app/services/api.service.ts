@@ -1,3 +1,5 @@
+//Communicates with the FastAPI backend
+
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
